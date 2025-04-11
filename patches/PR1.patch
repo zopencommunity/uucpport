@@ -1,0 +1,115 @@
+diff --git a/unix/init.c b/unix/init.c
+index d9d2147..5fa937b 100644
+--- a/unix/init.c
++++ b/unix/init.c
+@@ -107,7 +107,7 @@ extern char *getwd ();
+ #endif
+ #if HAVE_SYSCONF
+ #ifndef sysconf
+-extern long sysconf ();
++// extern long sysconf ();
+ #endif
+ #endif
+ 
+diff --git a/unix/proctm.c b/unix/proctm.c
+index e44edc2..43a8918 100644
+--- a/unix/proctm.c
++++ b/unix/proctm.c
+@@ -103,7 +103,7 @@ extern time_t time ();
+ #endif
+ #if HAVE_SYSCONF
+ #ifndef sysconf
+-extern long sysconf ();
++//extern long sysconf ();
+ #endif
+ #endif
+ 
+diff --git a/unix/serial.c b/unix/serial.c
+index 723ca22..cc21261 100644
+--- a/unix/serial.c
++++ b/unix/serial.c
+@@ -183,8 +183,8 @@ const char serial_rcsid[] = "$Id: serial.c,v 1.78 2002/03/05 19:10:42 ian Rel $"
+ 
+ #if HAVE_TLI
+ extern int t_errno;
+-extern char *t_errlist[];
+-extern int t_nerr;
++//extern char *t_errlist[];
++int t_nerr = 30;
+ #endif
+ 
+ /* Determine bits to clear for the various terminal control fields for
+@@ -2408,7 +2408,7 @@ fsysdep_conn_read (qconn, zbuf, pclen, cmin, ctimeout, freport)
+ 	      if (freport)
+ 		ulog (LOG_ERROR, "t_rcv: %s",
+ 		      (t_errno >= 0 && t_errno < t_nerr
+-		       ? t_errlist[t_errno]
++		       ? t_strerror(t_errno)
+ 		       : "unknown TLI error"));
+ 
+ 	      return FALSE;
+@@ -2633,7 +2633,7 @@ fsysdep_conn_write (qconn, zwrite, cwrite)
+ 		{
+ 		  ulog (LOG_ERROR, "t_snd: %s",
+ 			(t_errno >= 0 && t_errno < t_nerr
+-			 ? t_errlist[t_errno]
++			 ? t_strerror(t_errno)
+ 			 : "unknown TLI error"));
+ 		  return FALSE;
+ 		}
+@@ -2818,7 +2818,7 @@ fsysdep_conn_io (qconn, zwrite, pcwrite, zread, pcread)
+ 		    {
+ 		      ulog (LOG_ERROR, "t_rcv: %s",
+ 			    (t_errno >= 0 && t_errno < t_nerr
+-			     ? t_errlist[t_errno]
++			     ? t_strerror(t_errno)
+ 			     : "unknown TLI error"));
+ 		      return FALSE;
+ 		    }
+@@ -2886,7 +2886,7 @@ fsysdep_conn_io (qconn, zwrite, pcwrite, zread, pcread)
+ 		    {
+ 		      ulog (LOG_ERROR, "t_snd: %s",
+ 			    (t_errno >= 0 && t_errno < t_nerr
+-			     ? t_errlist[t_errno]
++			     ? t_strerror(t_errno)
+ 			     : "unknown TLI error"));
+ 		      return FALSE;
+ 		    }
+@@ -3066,7 +3066,7 @@ fsysdep_conn_io (qconn, zwrite, pcwrite, zread, pcread)
+ 		      alarm (0);
+ 		      ulog (LOG_ERROR, "t_snd: %s",
+ 			    (t_errno >= 0 && t_errno < t_nerr
+-			     ? t_errlist[t_errno]
++			     ? t_strerror(t_errno)
+ 			     : "unknown TLI error"));
+ 		      return FALSE;
+ 		    }
+diff --git a/unix/tli.c b/unix/tli.c
+index b1bbbaf..c772987 100644
+--- a/unix/tli.c
++++ b/unix/tli.c
+@@ -88,12 +88,12 @@ const char tli_rcsid[] = "$Id: tli.c,v 1.8 2002/03/05 19:10:42 ian Rel $";
+ /* Hopefully these externs will not cause any trouble.  This is how
+    they are shown in the SVID.  */
+ extern int t_errno;
+-extern char *t_errlist[];
+-extern int t_nerr;
++//extern char *t_errlist[];
++int t_nerr = 30;
+ 
+ #ifndef HAVE_TIUSER_H
+ #ifndef t_alloc
+-extern pointer t_alloc ();
++//extern pointer t_alloc ();
+ #endif
+ #endif
+ 
+@@ -145,7 +145,7 @@ ztlierror ()
+     return strerror (errno);
+   if (t_errno < 0 || t_errno >= t_nerr)
+     return "Unknown TLI error";
+-  return t_errlist[t_errno];
++  return t_strerror(t_errno);
+ } 
+ 
+ /* Initialize a TLI connection.  This may be called with qconn->qport
