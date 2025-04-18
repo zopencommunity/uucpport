@@ -1,5 +1,5 @@
 # Update bump details accordingly. Use bump check to confirm.
-# bump: uucp-version /UUCP_VERSION="(.*)"/ https://ftp.gnu.org/gnu/uucp/|re:/href="uucp-([\d]*.[\d]).tar.gz"/$1/|semver:*
+# bump: uucp-version /UUCP_VERSION="(.*)"/ https://ftp.gnu.org/gnu/uucp/|re:/href="uucp-([\d.]+).tar.gz"/$1/|semver:*
 UUCP_VERSION="1.07" # Specify a stable release
 export ZOPEN_STABLE_URL="https://ftp.gnu.org/gnu/uucp/uucp-${UUCP_VERSION}.tar.gz"
 export ZOPEN_STABLE_DEPS="make gzip tar curl perl automake autoconf m4 sed gettext zoslib"
